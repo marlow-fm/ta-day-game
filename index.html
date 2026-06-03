@@ -1,610 +1,343 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A Day With Your TA</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Bangers&display=swap" rel="stylesheet">
+//fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=Bangers&display=swap" rel="stylesheet">
 <style>
-:root {
-  --font-display: 'Bangers', cursive;
-  --font-body: 'Nunito', sans-serif;
-  --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.25rem);
-  --text-lg: clamp(1.25rem, 1rem + 0.75vw, 1.75rem);
-  --text-xl: clamp(1.75rem, 1.2rem + 1.5vw, 2.5rem);
-  --text-hero: clamp(2.5rem, 1rem + 4vw, 4.5rem);
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-12: 3rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1.25rem;
-  --radius-full: 9999px;
-  --color-bg: #1a1a2e;
-  --color-surface: #16213e;
-  --color-panel: rgba(255,255,255,0.08);
-  --color-panel-border: rgba(255,255,255,0.15);
-  --color-text: #f0f0f0;
-  --color-text-muted: #b0b8cc;
-  --color-accent: #f7c948;
-  --color-accent-hover: #ffd966;
-  --color-btn-bg: rgba(247,201,72,0.15);
-  --color-btn-border: rgba(247,201,72,0.5);
-  --color-btn-hover: rgba(247,201,72,0.3);
-  --transition: 200ms cubic-bezier(0.16,1,0.3,1);
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body {
-  min-height: 100dvh;
-  background: var(--color-bg);
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  color: var(--color-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-/* GAME CONTAINER */
-#game {
-  width: min(900px, 100vw);
-  height: min(600px, 100dvh);
-  position: relative;
-  overflow: hidden;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-}
-
-/* BACKGROUND */
-#scene-bg {
-  position: absolute; inset: 0;
-  background-size: cover;
-  background-position: center;
-  transition: opacity 0.5s ease;
-  z-index: 0;
-}
-.bg-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(10,10,30,0.85) 0%, rgba(10,10,30,0.2) 60%, transparent 100%);
-  z-index: 1;
-}
-
-/* SPRITE */
-#sprite-container {
-  position: absolute;
-  bottom: 140px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  pointer-events: none;
-  animation: bob 2.5s ease-in-out infinite;
-}
-#sprite {
-  font-size: clamp(80px, 15vw, 120px);
-  line-height: 1;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-  transition: all 0.3s ease;
-  text-align: center;
-  user-select: none;
-}
-@keyframes bob {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-/* TEXT BOX */
-#text-box {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,30,0.92);
-  border-top: 1px solid var(--color-panel-border);
-  backdrop-filter: blur(12px);
-  padding: var(--space-3) var(--space-6) var(--space-3);
-  z-index: 20;
-  min-height: 130px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-#scene-text {
-  font-size: var(--text-base);
-  color: var(--color-text);
-  line-height: 1.55;
-  min-height: 2.4em;
-  letter-spacing: 0.01em;
-}
-#choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-2);
-}
-.choice-btn {
-  background: var(--color-btn-bg);
-  border: 1.5px solid var(--color-btn-border);
-  border-radius: var(--radius-full);
-  color: var(--color-accent);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  padding: var(--space-2) var(--space-4);
-  cursor: pointer;
-  transition: background var(--transition), border-color var(--transition), transform var(--transition);
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.choice-btn:hover, .choice-btn:focus-visible {
-  background: var(--color-btn-hover);
-  border-color: var(--color-accent-hover);
-  transform: translateY(-2px);
-  outline: none;
-}
-.choice-btn:active { transform: translateY(0); }
-
-/* TITLE SCREEN */
-#title-screen {
-  position: absolute; inset: 0;
-  z-index: 50;
-  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-6);
-  text-align: center;
-  padding: var(--space-8);
-}
-#title-screen h1 {
-  font-family: var(--font-display);
-  font-size: var(--text-hero);
-  color: var(--color-accent);
-  letter-spacing: 0.04em;
-  line-height: 1.1;
-  text-shadow: 0 0 30px rgba(247,201,72,0.4);
-}
-#title-screen p {
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
-  max-width: 50ch;
-  line-height: 1.6;
-}
-#start-btn {
-  background: var(--color-accent);
-  color: #1a1a2e;
-  border: none;
-  border-radius: var(--radius-full);
-  font-family: var(--font-body);
-  font-size: var(--text-lg);
-  font-weight: 900;
-  padding: var(--space-3) var(--space-12);
-  cursor: pointer;
-  box-shadow: 0 4px 24px rgba(247,201,72,0.4);
-  transition: transform var(--transition), box-shadow var(--transition);
-  letter-spacing: 0.03em;
-  animation: pulse-btn 2s ease-in-out infinite;
-}
-#start-btn:hover { transform: scale(1.05); box-shadow: 0 8px 32px rgba(247,201,72,0.6); }
-@keyframes pulse-btn { 0%,100% { box-shadow: 0 4px 24px rgba(247,201,72,0.4); } 50% { box-shadow: 0 4px 36px rgba(247,201,72,0.7); } }
-
-/* SCENE NAME BADGE + SOUND ICON */
-#scene-badge {
-  position: absolute;
-  top: var(--space-3);
-  left: var(--space-4);
-  background: rgba(0,0,0,0.5);
-  border: 1px solid var(--color-panel-border);
-  border-radius: var(--radius-full);
-  padding: 4px var(--space-3);
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  z-index: 30;
-  backdrop-filter: blur(8px);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-#sound-toggle {
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-4);
-  background: rgba(0,0,0,0.4);
-  border: 1px solid var(--color-panel-border);
-  border-radius: var(--radius-full);
-  color: var(--color-text-muted);
-  font-size: 1.1rem;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  z-index: 30;
-  backdrop-filter: blur(8px);
-  transition: background var(--transition);
-}
-#sound-toggle:hover { background: rgba(255,255,255,0.1); }
-
-/* ENDING SCREEN */
-#ending-screen {
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  z-index: 45;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--space-8);
-  gap: var(--space-6);
-}
-#ending-screen.visible { display: flex; }
-#ending-screen h2 {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  color: var(--color-accent);
-  letter-spacing: 0.06em;
-}
-#ending-screen p {
-  max-width: 52ch;
-  line-height: 1.7;
-  font-size: var(--text-base);
-  color: var(--color-text-muted);
-}
-#replay-btn {
-  background: transparent;
-  border: 2px solid var(--color-accent);
-  border-radius: var(--radius-full);
-  color: var(--color-accent);
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  font-weight: 700;
-  padding: var(--space-2) var(--space-8);
-  cursor: pointer;
-  transition: background var(--transition), transform var(--transition);
-}
-#replay-btn:hover { background: rgba(247,201,72,0.15); transform: scale(1.04); }
+:root{--fd:'Bangers',cursive;--fb:'Nunito',sans-serif;--ac:#f7c948;--ac2:#ffd966;--sur:rgba(8,8,24,0.94);--bd:rgba(255,255,255,0.13);--tr:200ms cubic-bezier(0.16,1,0.3,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100dvh;background:#0d0d1a;font-family:var(--fb);color:#f0f0f0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#game{width:min(900px,100vw);height:min(600px,100dvh);position:relative;overflow:hidden;border-radius:1.25rem;box-shadow:0 24px 80px rgba(0,0,0,0.7)}
+#scene-bg{position:absolute;inset:0;background-size:cover;background-position:center;z-index:0;transition:opacity 0.5s}
+.overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,4,18,0.93) 0%,rgba(4,4,18,0.28) 52%,rgba(4,4,18,0.08) 100%);z-index:1}
+#sprite-container{position:absolute;bottom:155px;left:50%;transform:translateX(-50%);z-index:10;pointer-events:none}
+#sprite{width:clamp(82px,13.5vw,118px);height:auto;filter:drop-shadow(0 6px 18px rgba(0,0,0,0.65));display:block;animation:bob 2.8s ease-in-out infinite;transition:opacity 0.3s}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+#text-box{position:absolute;bottom:0;left:0;right:0;background:var(--sur);border-top:1px solid var(--bd);backdrop-filter:blur(16px);padding:.5rem 1.4rem .6rem;z-index:20;min-height:155px;display:flex;flex-direction:column;gap:.22rem}
+#scene-label{font-size:.6rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--ac);opacity:.75}
+#scene-dialogue{font-size:clamp(.86rem,.82rem + .22vw,1.04rem);color:#dde0ee;line-height:1.52;min-height:1.3em}
+#scene-question{font-size:clamp(.9rem,.86rem + .24vw,1.08rem);font-weight:900;color:#fff;line-height:1.4;min-height:1em}
+#choices{display:flex;flex-wrap:wrap;gap:.38rem;margin-top:.28rem}
+.cb{background:rgba(247,201,72,.12);border:1.5px solid rgba(247,201,72,.4);border-radius:9999px;color:var(--ac);font-family:var(--fb);font-size:clamp(.76rem,.73rem + .18vw,.9rem);font-weight:700;padding:.36rem .88rem;cursor:pointer;transition:background var(--tr),transform var(--tr),border-color var(--tr);white-space:nowrap}
+.cb:hover{background:rgba(247,201,72,.26);border-color:var(--ac2);transform:translateY(-2px)}
+.cb:active{transform:translateY(0)}
+#badge{position:absolute;top:.7rem;left:.9rem;background:rgba(0,0,0,.52);border:1px solid var(--bd);border-radius:9999px;padding:3px .7rem;font-size:.62rem;color:#9aa2b8;z-index:30;backdrop-filter:blur(8px);letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+#snd{position:absolute;top:.7rem;right:.9rem;background:rgba(0,0,0,.42);border:1px solid var(--bd);border-radius:9999px;color:#9aa2b8;font-size:1rem;width:33px;height:33px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:30;backdrop-filter:blur(8px);transition:background var(--tr)}
+#snd:hover{background:rgba(255,255,255,.1)}
+#title{position:absolute;inset:0;z-index:50;background:linear-gradient(135deg,#0f0c29,#302b63,#1a1a3e);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:2rem}
+#title h1{font-family:var(--fd);font-size:clamp(2.1rem,.9rem + 3.4vw,3.9rem);color:var(--ac);letter-spacing:.04em;line-height:1.05;text-shadow:0 0 42px rgba(247,201,72,.5)}
+#title p{font-size:clamp(.88rem,.83rem + .26vw,1.08rem);color:#b0b8cc;max-width:46ch;line-height:1.6}
+#startbtn{background:var(--ac);color:#1a1a2e;border:none;border-radius:9999px;font-family:var(--fb);font-size:clamp(1.05rem,.95rem + .5vw,1.35rem);font-weight:900;padding:.65rem 2.8rem;cursor:pointer;box-shadow:0 4px 28px rgba(247,201,72,.45);transition:transform var(--tr),box-shadow var(--tr);animation:pbtn 2s ease-in-out infinite}
+#startbtn:hover{transform:scale(1.06)}
+@keyframes pbtn{0%,100%{box-shadow:0 4px 24px rgba(247,201,72,.4)}50%{box-shadow:0 4px 42px rgba(247,201,72,.75)}}
+#ending{position:absolute;inset:0;z-index:45;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;gap:1rem}
+#ending.show{display:flex}
+#ending h2{font-family:var(--fd);font-size:clamp(1.6rem,1.2rem + 1.2vw,2.4rem);color:var(--ac);letter-spacing:.06em}
+#ending p{max-width:50ch;line-height:1.7;font-size:clamp(.86rem,.82rem + .22vw,1.04rem);color:#b0b8cc}
+#replaybtn{background:transparent;border:2px solid var(--ac);border-radius:9999px;color:var(--ac);font-family:var(--fb);font-size:clamp(.86rem,.82rem + .2vw,1.03rem);font-weight:700;padding:.45rem 1.8rem;cursor:pointer;transition:background var(--tr),transform var(--tr)}
+#replaybtn:hover{background:rgba(247,201,72,.15);transform:scale(1.04)}
+.cp{position:absolute;width:9px;height:13px;top:-20px;border-radius:2px;animation:cf linear forwards;z-index:48;pointer-events:none}
+@keyframes cf{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(660px) rotate(740deg);opacity:0}}
+#flash{position:absolute;inset:0;background:rgba(180,0,0,0);z-index:35;pointer-events:none;transition:background .35s}
+#flash.on{background:rgba(200,0,0,.52)}
+/* ALFREDO GOLD GLOW */
+.alfredo-glow #scene-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(255,215,0,.38) 0%,transparent 70%);z-index:2;animation:glow 1.5s ease-in-out infinite alternate}
+@keyframes glow{0%{opacity:.6}100%{opacity:1}}
 </style>
 </head>
 <body>
-
 <div id="game">
-  <!-- Title Screen -->
-  <div id="title-screen">
+
+  <div id="title">
     <h1>A Day With<br>Your TA</h1>
-    <p>Help me survive my day and make it to Las Palmas 6th grade in one piece. Every choice matters… kind of.</p>
-    <button id="start-btn">Let's Go! 🎒</button>
+    <p>Follow Marlow through a full day — from breakfast to La Jolla Kayak to Mrs. Trzcinski's class. Every choice matters… kind of. 🐊</p>
+    <button id="startbtn">Let's Go! 🎒</button>
   </div>
 
-  <!-- Ending Screen -->
-  <div id="ending-screen">
-    <div style="font-size:4rem">🎉</div>
-    <h2>I Made It!</h2>
-    <p id="ending-text">No matter what path the day took, the best part was always ending up here with you. Thanks for letting me be your TA this quarter — I'll never forget this class.</p>
-    <button id="replay-btn">Play Again (Try a Different Route)</button>
+  <div id="ending">
+    <div style="font-size:3.5rem">🎉</div>
+    <h2>Thanks For Playing!</h2>
+    <p>No matter which path you took today, the best part was always ending up here with you all. Thanks for letting me be your TA this quarter — I'll never forget this class. Go Gators! 🐊</p>
+    <button id="replaybtn">Play Again</button>
   </div>
 
-  <!-- Scene Background -->
+  <div id="flash"></div>
   <div id="scene-bg"></div>
-  <div class="bg-overlay"></div>
-
-  <!-- Badge + Sound Toggle -->
-  <div id="scene-badge">Scene</div>
-  <button id="sound-toggle" aria-label="Toggle sound">🔊</button>
-
-  <!-- Sprite -->
-  <div id="sprite-container">
-    <div id="sprite">🧑‍💻</div>
-  </div>
-
-  <!-- Text Box -->
+  <div class="overlay"></div>
+  <div id="badge">Scene</div>
+  <button id="snd">🔊</button>
+  <div id="sprite-container"><img id="sprite" src="marlow_thinking.png" alt="Marlow"></div>
   <div id="text-box">
-    <div id="scene-text">Loading…</div>
+    <div id="scene-label"></div>
+    <div id="scene-dialogue"></div>
+    <div id="scene-question"></div>
     <div id="choices"></div>
   </div>
 </div>
 
 <script>
-// SCENES
-const scenes = {
-  start: {
-    name: "Home",
-    bg: "linear-gradient(135deg, #1e3a5f 0%, #2d6a9f 50%, #f4a261 100%)",
-    sprite: "🧑‍💻",
-    text: "Morning. I gotta get to Las Palmas today or I miss hanging with you guys. How should I get there?",
-    choices: [
-      { label: "🚲 Ride my bike", next: "bike_to_school" },
-      { label: "🚗 Drive my car", next: "drive_to_school" }
-    ]
+const S = {
+  start:{
+    name:"Home — Morning",bg:"bg_bedroom.jpg",sp:"marlow_thinking.png",
+    d:"Let's start the day off right!",
+    q:"What should I eat for breakfast?",
+    c:[{l:"⏭️ Skip Breakfast",n:"skip"},{l:"🥣 Cereal!",n:"cereal"}]
   },
-  bike_to_school: {
-    name: "On the Bike",
-    bg: "linear-gradient(135deg, #56ab2f, #a8e063)",
-    sprite: "🚴",
-    text: "Okay I'm on the bike. Feeling confident. Maybe too confident. What's my strategy?",
-    choices: [
-      { label: "🔥 Go full speed", next: "crash" },
-      { label: "🐢 Take it slow and steady", next: "crash" }
-    ]
+  skip:{
+    name:"Kitchen",bg:"kitchen.jpg",sp:"marlow_shocked.png",
+    d:"Nothing? Really? My stomach is already filing a complaint.",
+    q:"Whatever — time to get to UCSD.",
+    c:[{l:"➡️ Let's Go",n:"transport"}]
   },
-  crash: {
-    name: "CRASH 💥",
-    bg: "linear-gradient(135deg, #f00000, #dc281e)",
-    sprite: "😵",
-    text: "…I crashed. Both options led here because I am not built for the bike life. I missed class entirely. That was embarrassing. Let's try again.",
-    choices: [
-      { label: "↩️ Try again from home", next: "start" }
-    ]
+  cereal:{
+    name:"Kitchen",bg:"kitchen.jpg",sp:"marlow_excited.png",
+    d:"Cereal hits different in the morning. Fueled and ready!",
+    q:"Time to head to UCSD!",
+    c:[{l:"➡️ Let's Go",n:"transport"}]
   },
-  drive_to_school: {
-    name: "Driving to UCSD",
-    bg: "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)",
-    sprite: "🚗",
-    text: "Smart choice. I hop in the car and head toward UCSD. I've got some time before my shift at La Jolla Kayak. First things first — breakfast?",
-    choices: [
-      { label: "☕ Campus café", next: "campus_cafe" },
-      { label: "🥱 Skip it, I'll survive", next: "skip_breakfast" },
-      { label: "🍌 Quick snack at home before I left", next: "home_snack" }
-    ]
+  transport:{
+    name:"Heading Out",bg:"bg_street.jpg",sp:"marlow_thinking.png",
+    d:"Time to go to class, but first —",
+    q:"Which should I take to get there?",
+    c:[{l:"🚗 Drive the Car",n:"drive"},{l:"🚲 Ride the Bike",n:"bike"}]
   },
-  campus_cafe: {
-    name: "Campus Café",
-    bg: "linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b)",
-    sprite: "😄",
-    text: "Café run complete. Got an açaí bowl, feel like a new person. Energy: maxed. Now off to La Jolla Kayak for my shift.",
-    choices: [
-      { label: "🌊 Head to the kayak shop", next: "kayak_intro_happy" }
-    ]
+  bike:{
+    name:"CRASH 💥",bg:"bg_crash.jpg",sp:"marlow_shocked.png",
+    d:"I crashed. Immediately. Both options lead here because I am NOT built for bike life.",
+    q:"Completely embarrassing. I missed class. Try again?",
+    c:[{l:"↩️ Try Again",n:"start",go:true}]
   },
-  skip_breakfast: {
-    name: "No Food",
-    bg: "linear-gradient(135deg, #373B44, #4286f4)",
-    sprite: "😩",
-    text: "No breakfast. Huge mistake. My stomach is making sounds I've never heard before. Hopefully nobody notices at the kayak shop.",
-    choices: [
-      { label: "🌊 Drag myself to the kayak shop", next: "kayak_intro_hungry" }
-    ]
+  drive:{
+    name:"Driving to UCSD",bg:"bg_driving.png",sp:"marlow_excited.png",
+    d:"Nothing beats cruising down the 5. Windows down, music up.",
+    q:"Let's get to UCSD!",
+    c:[{l:"➡️ Arrive at UCSD",n:"ucsd"}]
   },
-  home_snack: {
-    name: "Quick Snack",
-    bg: "linear-gradient(135deg, #11998e, #38ef7d)",
-    sprite: "🙂",
-    text: "Grabbed a granola bar on the way out. Not glamorous, but effective. Good enough. Off to work.",
-    choices: [
-      { label: "🌊 Head to the kayak shop", next: "kayak_intro_okay" }
-    ]
+  ucsd:{
+    name:"UCSD Campus",bg:"bg_ucsd.jpg",sp:"marlow_thinking.png",
+    d:"We made it to campus!",
+    q:"Should I skip class and doomscroll… or actually go to class?",
+    c:[{l:"📱 Doomscroll",n:"doomscroll"},{l:"📚 Go to Class",n:"class_good"}]
   },
-
-  /* KAYAK SCENES – we’ll use the real photo */
-  kayak_intro_happy: {
-    name: "La Jolla Kayak",
-    bg: "kayak-photo",
-    sprite: "😎",
-    text: "La Jolla Kayak. I work here — give kayak and snorkel tours on the ocean. Fed and caffeinated, I'm ready for anything. What kind of tour do I get today?",
-    choices: [
-      { label: "😌 Easy group, total chill vibes", next: "easy_tour" },
-      { label: "🤪 Pure chaos from minute one", next: "weird_tour" },
-      { label: "🐋 We spot a massive sea lion", next: "whale_tour" }
-    ]
+  doomscroll:{
+    name:"GAME OVER 💀",bg:"bg_doomscroll.jpg",sp:"marlow_oldman.png",
+    d:"Marlow doomscrolled for WAY too long. He's been sitting here for years.",
+    q:"He never made it to class. He never made it anywhere. GAME OVER.",
+    c:[{l:"↩️ Try Again",n:"start",go:true}]
   },
-  kayak_intro_hungry: {
-    name: "La Jolla Kayak",
-    bg: "kayak-photo",
-    sprite: "😮",
-    text: "La Jolla Kayak. My stomach growls louder than the ocean. I'm giving tours out here running on absolutely nothing. What kind of tour do I get stuck with?",
-    choices: [
-      { label: "😌 Easy group, total chill vibes", next: "easy_tour" },
-      { label: "🤪 Pure chaos from minute one", next: "weird_tour" },
-      { label: "🐋 We spot a massive sea lion", next: "whale_tour" }
-    ]
+  class_good:{
+    name:"In Class ✅",bg:"bg_ucsd.jpg",sp:"marlow_excited.png",
+    d:"Crushed it in class today. Notes taken, questions asked. Brain = activated.",
+    q:"After class it's time for work!",
+    c:[{l:"🚗 Head to Work",n:"drive_work"}]
   },
-  kayak_intro_okay: {
-    name: "La Jolla Kayak",
-    bg: "kayak-photo",
-    sprite: "🙂",
-    text: "La Jolla Kayak. Showing up with granola bar energy. Not bad, not great — just vibes. What kind of tour is it today?",
-    choices: [
-      { label: "😌 Easy group, total chill vibes", next: "easy_tour" },
-      { label: "🤪 Pure chaos from minute one", next: "weird_tour" },
-      { label: "🐋 We spot a massive sea lion", next: "whale_tour" }
-    ]
+  drive_work:{
+    name:"Driving to Work",bg:"bg_driving.png",sp:"marlow_excited.png",
+    d:"San Diego sun hitting just right. La Jolla Kayak here we come!",
+    q:"",
+    c:[{l:"➡️ Arrive at the Shop",n:"kayak_shop"}]
   },
-
-  easy_tour: {
-    name: "The Easy Tour",
-    bg: "linear-gradient(160deg, #43cea2, #185a9d)",
-    sprite: "😌",
-    text: "The group actually listened. Nobody panicked. Nobody flipped. We paddled, we talked, we came back. I feel like a professional. That was almost too easy.",
-    choices: [
-      { label: "🚗 Drive to Las Palmas", next: "drive_to_las_palmas" }
-    ]
+  kayak_shop:{
+    name:"La Jolla Kayak",bg:"Kayak.jpg",sp:"marlow_beach.png",
+    d:"We made it! My manager said I can go on a Kayak Tour or clean the Bathrooms. EW.",
+    q:"What's it gonna be?",
+    c:[{l:"🚣 Start the Tour",n:"tour"},{l:"🚽 Clean the Bathrooms",n:"bathroom"}]
   },
-  weird_tour: {
-    name: "The Chaotic Tour",
-    bg: "linear-gradient(160deg, #f7971e, #ffd200)",
-    sprite: "😅",
-    text: "One person paddled backward the whole time. Another tried to stand up in the kayak twice. Someone screamed at a pelican. We did not flip, but we came close. I need a moment.",
-    choices: [
-      { label: "🚗 Drive to Las Palmas (I need this)", next: "drive_to_las_palmas" }
-    ]
+  bathroom:{
+    name:"The Bathrooms 🚽",bg:"bg_bathroom.jpg",sp:"marlow_shocked.png",
+    d:"This is the worst day of my life. The smell alone…",
+    q:"Okay I survived. Tour time.",
+    c:[{l:"➡️ Go on the Tour",n:"tour"}]
   },
-  whale_tour: {
-    name: "SEA LION SIGHTING 🐊",
-    bg: "linear-gradient(135deg, #005C97, #363795)",
-    sprite: "🤩",
-    text: "Out of nowhere — a sea lion just surfaces right next to our kayaks. Everyone freaked out in the best possible way. I have been out here for months waiting for this. New core memory unlocked.",
-    choices: [
-      { label: "🚗 Drive to Las Palmas (on a high)", next: "drive_to_las_palmas" }
-    ]
+  tour:{
+    name:"Kayak Tour 🌊",bg:"bg_ocean.jpg",sp:"marlow_beach.png",
+    d:"Out on the water in La Jolla — honestly the best office in the world.",
+    q:"What should we learn about today?",
+    c:{l:"🦭 Sea Lions",n:"sealion"},{l:"🦈 Leopard Sharks",n:"lshark"}]
   },
-  drive_to_las_palmas: {
-    name: "Almost There",
-    bg: "linear-gradient(135deg, #1f4037, #99f2c8)",
-    sprite: "🚗",
-    text: "Shift done. I'm in the car headed to Las Palmas. Whatever today threw at me — crash attempt, chaotic tour, or no breakfast — I'm still coming to see your class. Almost there.",
-    choices: [
-      { label: "🏫 Arrive at Las Palmas", next: "arrive" }
-    ]
+  sealion:{
+    name:"Sea Lions 🦭",bg:"bg_sealion.jpg",sp:"marlow_shocked.png",
+    d:"",
+    q:"",
+    c:[{l:"➡️ Continue",n:"after_tour"}]
   },
-  arrive: {
-    name: "Las Palmas 6th Grade",
-    bg: "linear-gradient(135deg, #355C7D, #6C5B7B, #C06C84)",
-    sprite: "😊",
-    text: "I walk in and you're all here. This is honestly the best part of the day. What should we do with the time we've got?",
-    choices: [
-      { label: "📖 Look back at our favorite memories", next: "memories" },
-      { label: "🎯 Talk about goals and next steps", next: "goals" }
-    ]
+  lshark:{
+    name:"Leopard Sharks 🦈",bg:"bg_leopardshark.jpg",sp:"marlow_shocked.png",
+    d:"",
+    q:"",
+    c:[{l:"➡️ Continue",n:"after_tour"}]
   },
-  memories: {
-    name: "Best Memories",
-    bg: "linear-gradient(135deg, #4568DC, #B06AB3)",
-    sprite: "🥹",
-    text: "Remember that time we did ___? Or when ___? Every week I came in here you all made it interesting. Think of one moment from this class that made you laugh or feel proud — turn and tell the person next to you.",
-    choices: [
-      { label: "💛 Wrap it up", next: "final_ending" }
-    ]
+  after_tour:{
+    name:"Back at the Shop",bg:"Kayak.jpg",sp:"marlow_thinking.png",
+    d:"Now that work's over I need to make it to Mrs. Trzcinski's class! But first… I am feeling REALLY hungry.",
+    q:"What should I get to eat?",
+    c:[{l:"🍗 KFC",n:"kfc"},{l:"🍝 Alfredo Special",n:"alfredo"}]
   },
-  goals: {
-    name: "What's Next",
-    bg: "linear-gradient(135deg, #134E5E, #71B280)",
-    sprite: "💪",
-    text: "I'm in college trying to figure out my thing. You're in 6th grade doing the same. Think about one goal — school, sports, something creative, anything. Share it with someone near you. Hearing your goals actually makes me want to work harder too.",
-    choices: [
-      { label: "💛 Wrap it up", next: "final_ending" }
-    ]
+  kfc:{
+    name:"KFC",bg:"bg_kfc.webp",sp:"marlow_thinking.png",
+    d:"Hmm… actually you know what…",
+    q:"I think I want the Alfredo Special.",
+    c:[{l:"🍝 Alfredo Special it is",n:"alfredo"}]
   },
-  final_ending: {
-    name: "The End",
-    bg: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
-    sprite: "🫶",
-    text: "ENDING",
-    choices: []
-  }
+  alfredo:{
+    name:"🍝 THE ALFREDO SPECIAL 🍝",bg:"bg_alfredo.jpg",sp:"marlow_alfredo.png",
+    d:"THE ALFREDO SPECIAL. The greatest meal known to mankind. Angels are singing. Confetti is falling. This moment will be in my memoir.",
+    q:"Life. Is. Good.",
+    c:[{l:"➡️ On to Las Palmas!",n:"laspalmas"}],
+    confetti:true,
+    goldglow:true
+  },
+  laspalmas:{
+    name:"Las Palmas Elementary",bg:"bg_laspalmas.jpg",sp:"marlow_excited.png",
+    d:"Time for my favorite part of the day!",
+    q:"",
+    c:[{l:"🏫 Go to Class",n:"classroom"}]
+  },
+  classroom:{
+    name:"Mrs. Trzcinski's Class",bg:"bg_classroom.jpg",sp:"marlow_wave.png",
+    d:"Hello Everybody!! 👋",
+    q:"What should we do today?",
+    c:[{l:"🥎 Softball",n:"softball"},{l:"➕ Math",n:"math"}]
+  },
+  math:{
+    name:"Math? Really?",bg:"bg_classroom.jpg",sp:"marlow_thinking.png",
+    d:"…I think you meant softball.",
+    q:"",
+    c:[{l:"🥎 Softball it is",n:"softball"}]
+  },
+  softball:{
+    name:"Softball Time! 🥎",bg:"bg_softball.jpg",sp:"marlow_excited.png",
+    d:"LET'S GOOO! This is what I came here for.",
+    q:"",
+    c:[{l:"➡️ Back to Class",n:"goodbye"}]
+  },
+  goodbye:{
+    name:"Heading Home",bg:"bg_classroom.jpg",sp:"marlow_wave.png",
+    d:"Now that we're finished it's time to head home.",
+    q:"Bye everybody — thanks for letting me join your classroom! 🐊",
+    c:[{l:"👋 Say Goodbye",n:"final_ending"}]
+  },
+  final_ending:{name:"The End",bg:"bg_bedroom.jpg",sp:"marlow_wave.png",d:"ENDING",q:"",c:[],confetti:true}
 };
 
 // AUDIO
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx = null;
-let soundEnabled = true;
+const AC=window.AudioContext||window.webkitAudioContext;
+let actx=null,soundOn=true;
+function getCtx(){if(!actx)actx=new AC();return actx;}
+function tone(f,dur,type='sine',g=0.14){
+  if(!soundOn)return;
+  try{const c=getCtx(),o=c.createOscillator(),gn=c.createGain();
+  o.connect(gn);gn.connect(c.destination);o.type=type;
+  o.frequency.setValueAtTime(f,c.currentTime);
+  gn.gain.setValueAtTime(g,c.currentTime);
+  gn.gain.exponentialRampToValueAtTime(0.001,c.currentTime+dur);
+  o.start(c.currentTime);o.stop(c.currentTime+dur);}catch(e){}
+}
+function playClick(){tone(440,.1,'square',.08);setTimeout(()=>tone(660,.1,'square',.06),60);}
+function playCrash(){tone(200,.4,'sawtooth',.15);setTimeout(()=>tone(100,.5,'sawtooth',.1),200);}
+function playWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.25,'triangle',.12),i*120));}
+function playAlfredo(){
+  [523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>tone(f,.3,'triangle',.18),i*100));
+  setTimeout(()=>[784,1047,1319,1568].forEach((f,i)=>setTimeout(()=>tone(f,.25,'triangle',.15),i*90)),600);
+}
+function playGameOver(){tone(300,.3,'sawtooth',.2);setTimeout(()=>tone(200,.4,'sawtooth',.18),250);setTimeout(()=>tone(100,.8,'sawtooth',.15),500);}
 
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  return audioCtx;
-}
-function playTone(freq, duration, type='sine', gain=0.15) {
-  if (!soundEnabled) return;
-  try {
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    osc.connect(gainNode);
-    gainNode.connect(ctx.destination);
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
-    gainNode.gain.setValueAtTime(gain, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + duration);
-  } catch(e) {}
-}
-function playClick() {
-  playTone(440, 0.1, 'square', 0.08);
-  setTimeout(() => playTone(660, 0.1, 'square', 0.06), 60);
-}
-function playCrash() {
-  playTone(200, 0.4, 'sawtooth', 0.15);
-  setTimeout(() => playTone(100, 0.5, 'sawtooth', 0.1), 200);
-}
-function playWin() {
-  [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => playTone(f, 0.25, 'triangle', 0.12), i * 120));
-}
-function toggleSound() {
-  soundEnabled = !soundEnabled;
-  document.getElementById('sound-toggle').textContent = soundEnabled ? '🔊' : '🔇';
-}
-
-// GAME STATE
-let currentSceneId = 'start';
-
-function setBackground(bgValue) {
-  const bgEl = document.getElementById('scene-bg');
-  if (bgValue === 'kayak-photo') {
-    bgEl.style.backgroundImage = "url('Kayak.jpg')";
-    bgEl.style.backgroundSize = "cover";
-    bgEl.style.backgroundPosition = "center";
-  } else {
-    bgEl.style.backgroundImage = 'none';
-    bgEl.style.background = bgValue;
+// CONFETTI
+function spawnConfetti(){
+  const colors=['#f7c948','#ff6b6b','#4ecdc4','#45b7d1','#96ceb4','#ffeaa7','#fd79a8','#a29bfe'];
+  const game=document.getElementById('game');
+  for(let i=0;i<80;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='cp';
+      el.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.2+Math.random()*1.8}s;animation-delay:0s;transform:rotate(${Math.random()*360}deg)`;
+      game.appendChild(el);
+      setTimeout(()=>el.remove(),3200);
+    },i*35);
   }
 }
 
-function goToScene(id) {
-  const scene = scenes[id];
-  if (!scene) return;
+// BG
+function setBg(val){
+  const el=document.getElementById('scene-bg');
+  el.style.backgroundImage=`url('${val}')`;
+  el.style.background='';
+}
 
+// GAME OVER FLASH
+function flashRed(){
+  const f=document.getElementById('flash');
+  f.classList.add('on');
+  setTimeout(()=>f.classList.remove('on'),600);
+}
+
+// SCENE ENGINE
+function goTo(id){
+  const sc=S[id];if(!sc)return;
   playClick();
+  if(sc.go)flashRed();
+  if(id==='bike'||id==='doomscroll'){sc.go?null:null;playGameOver();}
+  if(id==='final_ending'){showEnding();return;}
 
-  if (id === 'crash') playCrash();
-  if (id === 'final_ending') { showEnding(); return; }
+  document.getElementById('badge').textContent=sc.name;
+  setBg(sc.bg);
 
-  currentSceneId = id;
+  const spr=document.getElementById('sprite');
+  spr.style.opacity='0';
+  setTimeout(()=>{spr.src=sc.sp;spr.style.opacity='1';},200);
 
-  document.getElementById('scene-badge').textContent = scene.name;
-  setBackground(scene.bg);
-  document.getElementById('sprite').textContent = scene.sprite;
+  const sp=document.getElementById('sprite-container');
+  sp.style.animation='none';void sp.offsetWidth;sp.style.animation='';
 
-  const sp = document.getElementById('sprite-container');
-  sp.style.animation = 'none';
-  void sp.offsetWidth;
-  sp.style.animation = '';
+  const dEl=document.getElementById('scene-dialogue');
+  const qEl=document.getElementById('scene-question');
+  dEl.style.opacity='0';qEl.style.opacity='0';
+  setTimeout(()=>{
+    dEl.textContent=sc.d;qEl.textContent=sc.q;
+    dEl.style.transition='opacity .3s';qEl.style.transition='opacity .3s';
+    dEl.style.opacity='1';qEl.style.opacity='1';
+  },160);
 
-  const textEl = document.getElementById('scene-text');
-  textEl.style.opacity = '0';
-  setTimeout(() => {
-    textEl.textContent = scene.text;
-    textEl.style.opacity = '1';
-    textEl.style.transition = 'opacity 0.3s ease';
-  }, 150);
-
-  const choicesEl = document.getElementById('choices');
-  choicesEl.innerHTML = '';
-  scene.choices.forEach(choice => {
-    const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.textContent = choice.label;
-    btn.onclick = () => goToScene(choice.next);
-    choicesEl.appendChild(btn);
+  const ch=document.getElementById('choices');
+  ch.innerHTML='';
+  sc.c.forEach(choice=>{
+    const b=document.createElement('button');
+    b.className='cb';b.textContent=choice.l;
+    b.onclick=()=>goTo(choice.n);
+    ch.appendChild(b);
   });
+
+  // Special effects
+  const game=document.getElementById('game');
+  game.classList.remove('alfredo-glow');
+  if(sc.confetti)spawnConfetti();
+  if(sc.goldglow){game.classList.add('alfredo-glow');playAlfredo();}
+  if(id==='bike'||id==='doomscroll')playGameOver();
 }
 
-function showEnding() {
-  playWin();
-  const screen = document.getElementById('ending-screen');
-  screen.classList.add('visible');
+function showEnding(){
+  playWin();spawnConfetti();
+  document.getElementById('ending').classList.add('show');
 }
 
-function startGame() {
-  document.getElementById('title-screen').style.display = 'none';
-  goToScene('start');
-}
+// INIT
+document.getElementById('startbtn').addEventListener('click',()=>{
+  document.getElementById('title').style.display='none';
+  goTo('start');
+});
+document.getElementById('replaybtn').addEventListener('click',()=>{
+  document.getElementById('ending').classList.remove('show');
+  document.getElementById('game').classList.remove('alfredo-glow');
+  goTo('start');
+});
+document.getElementById('snd').addEventListener('click',()=>{
+  soundOn=!soundOn;
+  document.getElementById('snd').textContent=soundOn?'🔊':'🔇';
+});
 
-function replayGame() {
-  document.getElementById('ending-screen').classList.remove('visible');
-  goToScene('start');
-}
-
-// WIRE UP BUTTONS
-document.getElementById('start-btn').addEventListener('click', startGame);
-document.getElementById('replay-btn').addEventListener('click', replayGame);
-document.getElementById('sound-toggle').addEventListener('click', toggleSound);
-
-// Initial background
-setBackground(scenes.start.bg);
+setBg(S.start.bg);
 </script>
 </body>
 </html>
